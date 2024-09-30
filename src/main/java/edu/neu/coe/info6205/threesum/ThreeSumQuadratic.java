@@ -13,6 +13,7 @@ import java.util.List;
  * NOTE: The array provided in the constructor MUST be ordered.
  */
 public class ThreeSumQuadratic implements ThreeSum {
+
     /**
      * Construct a ThreeSumQuadratic on a.
      *
@@ -39,9 +40,59 @@ public class ThreeSumQuadratic implements ThreeSum {
     public List<Triple> getTriples(int j) {
         List<Triple> triples = new ArrayList<>();
         // TO BE IMPLEMENTED  : for each candidate, test if a[i] + a[j] + a[k] = 0.
-throw new RuntimeException("implementation missing");
+        int left = 0;
+        int right = length - 1;
+
+        while (left < j && right > j) {
+            int sum = a[left] + a[j] + a[right];
+            if (sum == 0) {
+                triples.add(new Triple(a[left], a[j], a[right]));
+                left++;
+                right--;
+                // Skip duplicates
+                while (left < j && a[left] == a[left - 1]) left++;
+                while (right > j && a[right] == a[right + 1]) right--;
+            } else if (sum < 0) {
+                left++;
+            } else {
+                right--;
+            }
+        }
+        return triples;
+
+
+
     }
 
     private final int[] a;
     private final int length;
+    public static void main(String[] args) {
+        // Example: Reading from terminal input
+        java.util.Scanner scanner = new java.util.Scanner(System.in);
+
+        System.out.println("Enter the number of elements in the sorted array:");
+        int n = scanner.nextInt();
+
+        int[] inputArray = new int[n];
+        System.out.println("Enter the sorted array elements:");
+        for (int i = 0; i < n; i++) {
+            inputArray[i] = scanner.nextInt();
+        }
+
+        // Create an instance of ThreeSumQuadratic
+        ThreeSumQuadratic threeSum = new ThreeSumQuadratic(inputArray);
+
+        // Get the triples
+        Triple[] triples = threeSum.getTriples();
+
+        // Print the result
+        if (triples.length == 0) {
+            System.out.println("No triplets found.");
+        } else {
+            for (Triple triple : triples) {
+                System.out.println(triple);
+            }
+        }
+    }
+
 }
