@@ -1,14 +1,13 @@
 package edu.neu.coe.info6205.threesum;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Implementation of ThreeSum which follows the simple optimization of
  * requiring a sorted array, then using binary search to find an element x where
- * -x the sum of a pair of elements.
+ * -x is the sum of a pair of elements.
  * <p>
  * The array provided in the constructor MUST be ordered.
  * <p>
@@ -26,20 +25,23 @@ class ThreeSumQuadrithmic implements ThreeSum {
     }
 
     public Triple[] getTriples() {
-        List<Triple> triples = new ArrayList<>();
-        for (int i = 0; i < length; i++)
+        Set<Triple> triples = new HashSet<>();
+        for (int i = 0; i < length; i++) {
             for (int j = i + 1; j < length; j++) {
                 Triple triple = getTriple(i, j);
-                if (triple != null) triples.add(triple);
+                if (triple != null) triples.add(triple);  // Add directly to the set to avoid duplicates
             }
-        Collections.sort(triples);
-        return triples.stream().distinct().toArray(Triple[]::new);
+        }
+        return triples.toArray(new Triple[0]);
     }
 
     public Triple getTriple(int i, int j) {
-        int index = Arrays.binarySearch(a, -a[i] - a[j]);
-        if (index >= 0 && index > j) return new Triple(a[i], a[j], a[index]);
-        else return null;
+        int target = -a[i] - a[j];
+        int index = Arrays.binarySearch(a, target);
+        if (index >= 0 && index > j) {  // Ensure index is valid and follows j to avoid repeats
+            return new Triple(a[i], a[j], a[index]);
+        }
+        return null;
     }
 
     private final int[] a;
