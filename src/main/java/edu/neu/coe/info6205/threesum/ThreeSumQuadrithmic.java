@@ -29,7 +29,7 @@ class ThreeSumQuadrithmic implements ThreeSum {
         for (int i = 0; i < length; i++) {
             for (int j = i + 1; j < length; j++) {
                 Triple triple = getTriple(i, j);
-                if (triple != null) triples.add(triple);  // Add directly to the set to avoid duplicates
+                if (triple != null) triples.add(triple);
             }
         }
         return triples.toArray(new Triple[0]);
@@ -38,7 +38,7 @@ class ThreeSumQuadrithmic implements ThreeSum {
     public Triple getTriple(int i, int j) {
         int target = -a[i] - a[j];
         int index = Arrays.binarySearch(a, target);
-        if (index >= 0 && index > j) {  // Ensure index is valid and follows j to avoid repeats
+        if (index >= 0 && index > j) {
             return new Triple(a[i], a[j], a[index]);
         }
         return null;

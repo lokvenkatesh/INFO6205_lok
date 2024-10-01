@@ -51,25 +51,25 @@ public class ThreeSumQuadraticWithCalipers implements ThreeSum {
      */
     public static List<Triple> calipers(int[] a, int i, Function<Triple, Integer> function) {
         List<Triple> triples = new ArrayList<>();
-        int left = i + 1;  // Start left pointer just after the fixed element
-        int right = a.length - 1;  // Start right pointer at the end of the array
+        int left = i + 1;
+        int right = a.length - 1;
 
         while (left < right) {
-            Triple triple = new Triple(a[i], a[left], a[right]);  // Create a new Triple
-            int sum = function.apply(triple);  // Use the function to calculate the sum of the triple
+            Triple triple = new Triple(a[i], a[left], a[right]);
+            int sum = function.apply(triple);
 
             if (sum == 0) {
-                triples.add(triple);  // Add the valid triple to the list
-                left++;  // Move the left pointer right
-                right--;  // Move the right pointer left
+                triples.add(triple);
+                left++;
+                right--;
 
-                // Skip over duplicates to ensure unique triples
+
                 while (left < right && a[left] == a[left - 1]) left++;
                 while (left < right && a[right] == a[right + 1]) right--;
             } else if (sum < 0) {
-                left++;  // If the sum is less than zero, we need a larger value, so move the left pointer
+                left++;
             } else {
-                right--;  // If the sum is greater than zero, we need a smaller value, so move the right pointer
+                right--;
             }
         }
 
@@ -84,15 +84,15 @@ public class ThreeSumQuadraticWithCalipers implements ThreeSum {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter numbers separated by space:");
         String input = scanner.nextLine();
-        // Converting user input to int array
+
         int[] userInputArray = Stream.of(input.split("\\s+")).mapToInt(Integer::parseInt).toArray();
-        // Sorting the array, since the algorithm requires a sorted array
+
         Arrays.sort(userInputArray);
 
-        // Creating an instance of ThreeSumQuadraticWithCalipers
+
         ThreeSumQuadraticWithCalipers threeSum = new ThreeSumQuadraticWithCalipers(userInputArray);
 
-        // Getting the result and printing it
+
         Triple[] result = threeSum.getTriples();
         if (result.length > 0) {
             System.out.println("Unique triples that sum to zero:");

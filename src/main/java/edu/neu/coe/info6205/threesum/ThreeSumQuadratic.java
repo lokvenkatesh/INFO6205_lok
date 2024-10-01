@@ -39,7 +39,7 @@ public class ThreeSumQuadratic implements ThreeSum {
      */
     public List<Triple> getTriples(int j) {
         List<Triple> triples = new ArrayList<>();
-        // TO BE IMPLEMENTED  : for each candidate, test if a[i] + a[j] + a[k] = 0.
+       
         int left = 0;
         int right = length - 1;
 
@@ -49,7 +49,7 @@ public class ThreeSumQuadratic implements ThreeSum {
                 triples.add(new Triple(a[left], a[j], a[right]));
                 left++;
                 right--;
-                // Skip duplicates
+
                 while (left < j && a[left] == a[left - 1]) left++;
                 while (right > j && a[right] == a[right + 1]) right--;
             } else if (sum < 0) {
@@ -67,7 +67,7 @@ public class ThreeSumQuadratic implements ThreeSum {
     private final int[] a;
     private final int length;
     public static void main(String[] args) {
-        // Example: Reading from terminal input
+
         java.util.Scanner scanner = new java.util.Scanner(System.in);
 
         System.out.println("Enter the number of elements in the sorted array:");
@@ -79,13 +79,13 @@ public class ThreeSumQuadratic implements ThreeSum {
             inputArray[i] = scanner.nextInt();
         }
 
-        // Create an instance of ThreeSumQuadratic
+
         ThreeSumQuadratic threeSum = new ThreeSumQuadratic(inputArray);
 
-        // Get the triples
+
         Triple[] triples = threeSum.getTriples();
 
-        // Print the result
+
         if (triples.length == 0) {
             System.out.println("No triplets found.");
         } else {
