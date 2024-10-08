@@ -10,7 +10,7 @@ public class InsertionSortBasic<S> {
 
     public static <X> InsertionSortBasic<X> create() {
         //noinspection unchecked
-        return new InsertionSortBasic<>((o1, o2) ->  ((Comparable<X>) o1).compareTo(o2));
+        return new InsertionSortBasic<>((o1, o2) -> ((Comparable<X>) o1).compareTo(o2));
     }
 
     public void sort(S[] a) {
@@ -41,10 +41,24 @@ public class InsertionSortBasic<S> {
      * @param a    the (sorted) array into which the transitional element should be moved.
      */
     private void insert(int from, int i, S[] a) {
-        // TO BE IMPLEMENTED  : implement inner loop of insertion sort using comparator
-        // END SOLUTION
+        S current = a[i];
+        int j = i - 1;
+
+        // Iterate backwards through the sorted part of the array and move elements to the right.
+        while (j >= from && comparator.compare(a[j], current) > 0) {
+            a[j + 1] = a[j];  // Shift elements to the right
+            j--;
+        }
+        a[j + 1] = current;  // Insert the current element at the correct position
     }
 
+    /**
+     * Swap elements in the array a at positions j and i.
+     *
+     * @param a the array.
+     * @param j the index of one element to be swapped.
+     * @param i the index of the other element to be swapped.
+     */
     private void swap(Object[] a, int j, int i) {
         Object temp = a[j];
         a[j] = a[i];

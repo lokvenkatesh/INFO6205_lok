@@ -60,9 +60,29 @@ public class Timer {
      * @return the average milliseconds per repetition.
      */
     public <T, U> double repeat(int n, boolean warmup, Supplier<T> supplier, Function<T, U> function, UnaryOperator<T> preFunction, Consumer<U> postFunction) {
-        // TO BE IMPLEMENTED : note that the timer is running when this method is called and should still be running when it returns.
-         return 0;
-        // END SOLUTION
+        for (int i = 0; i < n; i++) {
+            if (warmup) {
+                supplier.get(); // Warmup phase: run the supplier to potentially "warm up" caches, etc.
+            }
+            pause(); // Pause timer, preFunction shouldn't be timed
+
+            T input = supplier.get(); // Get input
+            if (preFunction != null) {
+                input = preFunction.apply(input); // Apply pre-processing if it exists
+            }
+
+            resume(); // Resume timer for timing the function execution
+            U output = function.apply(input); // Execute the function
+            lap(); // Mark the end of the lap
+
+            if (postFunction != null) {
+                pause(); // Pause timer, postFunction shouldn't be timed
+                postFunction.accept(output); // Apply post-processing if it exists
+                resume(); // Resume timer for next lap
+            }
+        }
+        pause(); // Pause at the end of all laps
+        return meanLapTime(); // Return the average lap time
     }
 
     /**
@@ -187,9 +207,7 @@ public class Timer {
      * @return the number of ticks for the system clock. Currently defined as nano time.
      */
     private static long getClock() {
-        // TO BE IMPLEMENTED 
-         return 0;
-        // END SOLUTION
+        return System.nanoTime(); // Get time in nanoseconds
     }
 
     /**
@@ -200,9 +218,7 @@ public class Timer {
      * @return the corresponding number of milliseconds.
      */
     private static double toMillisecs(long ticks) {
-        // TO BE IMPLEMENTED 
-         return 0;
-        // END SOLUTION
+        return ticks / 1_000_000.0; // Convert nanoseconds to milliseconds
     }
 
     final static LazyLogger logger = new LazyLogger(Timer.class);

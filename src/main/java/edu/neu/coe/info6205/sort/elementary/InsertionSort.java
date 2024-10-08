@@ -1,6 +1,3 @@
-/*
-  (c) Copyright 2018, 2019 Phasmid Software
- */
 package edu.neu.coe.info6205.sort.elementary;
 
 import edu.neu.coe.info6205.sort.Helper;
@@ -66,29 +63,41 @@ public class InsertionSort<X extends Comparable<X>> extends SortWithComparableHe
      * @param to   the index of the first element not to sort
      */
     public void sort(X[] xs, int from, int to) {
-        final Helper<X> helper = getHelper();
-        X a = helper.get(xs, from);
+        final Helper<X> helper = getHelper();  // Get the helper for assisting with the sorting.
+        X a = helper.get(xs, from);  // Get the first element in the subarray.
+
+        // Outer loop that iterates through the array from "from" to "to".
         for (int i = from + 1; i < to; i++) {
-            X b = helper.get(xs, i);
-            X aNext = b;
-            int j = i;
+            X b = helper.get(xs, i);  // Get the current element in the array.
+            X aNext = b;  // Set the next element.
+            int j = i;  // Start at the current index.
+
+            // Inner loop that shifts elements until the correct position is found.
             while (true) {
-                boolean swapped = helper.swapConditional(xs, a, j - 1, j, b);
-                if (!swapped) break;
-                if (aNext == b) aNext = a;
-                j--;
-                if (j == from) break;
-                a = helper.get(xs, j - 1);
+                boolean swapped = helper.swapConditional(xs, a, j - 1, j, b);  // Swap elements if needed.
+                if (!swapped) break;  // If no swap is needed, exit the loop.
+
+                if (aNext == b) aNext = a;  // Update the next element if necessary.
+                j--;  // Move to the previous element.
+                if (j == from) break;  // Stop if we reach the start of the array.
+
+                a = helper.get(xs, j - 1);  // Get the previous element for comparison.
             }
-            a = aNext;
+            a = aNext;  // Move the next element for comparison.
         }
     }
 
     public static final String DESCRIPTION = "Insertion sort";
 
+    /**
+     * Static method to sort an array using Insertion Sort.
+     *
+     * @param <T> the type of elements in the array.
+     * @param ts the array to be sorted.
+     */
     public static <T extends Comparable<T>> void sort(T[] ts) {
         try (InsertionSort<T> sort = new InsertionSort<>()) {
-            sort.mutatingSort(ts);
+            sort.mutatingSort(ts);  // Sort the array in place (mutating the original array).
         }
     }
 }
