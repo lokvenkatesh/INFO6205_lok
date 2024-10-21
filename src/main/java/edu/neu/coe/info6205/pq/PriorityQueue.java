@@ -5,19 +5,9 @@ import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 
 /**
- * Priority Queue Data Structure which uses a binary heap.
- * <p/>
- * It is unlimited in capacity, although there is no code to grow it after it has been constructed.
+ * Priority Queue Data Structure which uses a 4-ary heap (quadruple-ary heap).
  * It can serve as a minPQ or a maxPQ (define "max" as either false or true, respectively).
- * <p/>
- * It can support the root at index 1 or the root at index 2 variants.
- * <p/>
- * It follows the code from Sedgewick and Wayne more or less. I have changed the names a bit. For example,
- * the methods to insert and remove the max (or min) element are called "give" and "take," respectively.
- * <p/>
  * It operates on arbitrary Object types which implies that it requires a Comparator to be passed in.
- * <p/>
- * For all details on usage, please see PriorityQueueTest.java
  *
  * @param <K>
  */
@@ -52,8 +42,6 @@ public class PriorityQueue<K> implements Iterable<K> {
      * @param comparator a comparator for the type K
      */
     public PriorityQueue(int n, int first, boolean max, Comparator<K> comparator, boolean floyd) {
-
-        // NOTE that we reserve the first element of the binary heap, so the length must be n+1, not n
         this(max, new Object[n + first], first, 0, comparator, floyd);
     }
 
@@ -65,8 +53,6 @@ public class PriorityQueue<K> implements Iterable<K> {
      * @param comparator a comparator for the type K
      */
     public PriorityQueue(int n, boolean max, Comparator<K> comparator, boolean floyd) {
-
-        // NOTE that we reserve the first element of the binary heap, so the length must be n+1, not n
         this(n, 1, max, comparator, floyd);
     }
 
@@ -78,8 +64,6 @@ public class PriorityQueue<K> implements Iterable<K> {
      * @param comparator a comparator for the type K
      */
     public PriorityQueue(int n, boolean max, Comparator<K> comparator) {
-
-        // NOTE that we reserve the first element of the binary heap, so the length must be n+1, not n
         this(n, 1, max, comparator, false);
     }
 
@@ -115,7 +99,6 @@ public class PriorityQueue<K> implements Iterable<K> {
     public void give(K key) {
         if (last == binHeap.length - first)
             last--; // if we are already at capacity, then we arbitrarily trash the least eligible element
-        // (even if it's more eligible than key).
         binHeap[++last + first - 1] = key; // insert the key into the binary heap just after the last element
         swimUp(last + first - 1); // reorder the binary heap
     }
@@ -123,7 +106,6 @@ public class PriorityQueue<K> implements Iterable<K> {
     /**
      * Remove the root element from this Priority Queue and adjust the binary heap accordingly.
      * If max is true, then the result will be the maximum element, else the minimum element.
-     * NOTE that this method is called DelMax (or DelMin) in the book.
      *
      * @return If max is true, then the maximum element, otherwise the minimum element.
      * @throws PQException if this priority queue is empty
@@ -153,15 +135,19 @@ public class PriorityQueue<K> implements Iterable<K> {
         int i = k;
         while (firstChild(i) <= last + first - 1) {
             int j = firstChild(i);
-            if (j < last + first - 1 && unordered(j, j + 1)) j++;
-            if (p.test(i, j)) break;
-            swap(i, j);
-            i = j;
+            // Adjust for the 4-ary heap: need to check up to 4 children
+            int maxChild = j;
+            for (int c = 1; c < 4 && j + c <= last + first - 1; c++) {
+                if (unordered(maxChild, j + c)) maxChild = j + c;
+            }
+            if (p.test(i, maxChild)) break;
+            swap(i, maxChild);
+            i = maxChild;
         }
         return i;
     }
 
-    //Special sink method that sink the element and then swim the element back
+    //Special sink method that sinks the element and then swims the element back
     void snake(@SuppressWarnings("SameParameterValue") int k) {
         swimUp(doHeapify(k, (a, b) -> !unordered(a, b)));
     }
@@ -200,20 +186,19 @@ public class PriorityQueue<K> implements Iterable<K> {
     }
 
     /**
-     * Get the index of the parent of the element at index k
+     * Get the index of the parent of the element at index k in a 4-ary heap
      */
     private int parent(int k) {
-        return (k + 1 - first) / 2 + first - 1;
+        return (k - first - 1) / 4 + first;
     }
 
     /**
-     * Get the index of the first child of the element at index k.
-     * The index of the second child will be one greater than the result.
+     * Get the index of the first child of the element at index k in a 4-ary heap.
+     * The index of the second, third, and fourth child will be one, two, and three greater than the result, respectively.
      */
     private int firstChild(int k) {
-        return (k + 1 - first) * 2 + first - 1;
+        return 4 * (k - first) + first + 1;
     }
-
     /**
      * The following methods are for unit testing ONLY!!
      */
